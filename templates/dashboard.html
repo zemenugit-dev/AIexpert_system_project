@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medical Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <h2>🧠 Medical AI</h2>
+
+        <a href="/dashboard">🏠 Dashboard</a>
+       <a href="/questions">Start Diagnosis</a>
+       <a href="/history">View History</a>
+        <a href="/logout">🚪 Logout</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+        <h1>Welcome, {{ name }}</h1>
+
+        <div class="card">
+            <h3>Medical Expert System</h3>
+            <p>Select an option below to continue</p>
+
+            <div class="buttons">
+                <a href="/questions">Start Diagnosis</a>
+                <a href="/history">View History</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

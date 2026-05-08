@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnosis Result</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f6ff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 60%;
+            margin: auto;
+            margin-top: 50px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9ff;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .value {
+            color: #000;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .symptoms {
+            margin-top: 10px;
+            color: #444;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>🧠 Diagnosis Result</h2>
+
+    <div class="box">
+
+        <div class="label">Detected Disease:</div>
+        <div class="value">{{ disease }}</div>
+
+        <div class="label">Recommended Drug:</div>
+        <div class="value">{{ drug }}</div>
+
+        <div class="label">Medical Advice:</div>
+        <div class="value">{{ advice }}</div>
+
+        <div class="label">Symptoms You Selected:</div>
+        <div class="symptoms">
+            {% for s in symptoms %}
+                - {{ s }} <br>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    <a href="/dashboard" class="btn">Back to Dashboard</a>
+
+</div>
+
+</body>
+</html>

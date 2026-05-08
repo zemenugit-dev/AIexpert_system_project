@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnosis History</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/history.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <h2>🧠 Medical AI</h2>
+
+        <a href="/dashboard">🏠 Dashboard</a>
+
+        <a href="/questions">🩺 Start Diagnosis</a>
+
+        <a href="/history">📊 View History</a>
+
+        <a href="/logout">🚪 Logout</a>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="history-container">
+
+            <a href="/dashboard" class="back-btn">
+                ← Back to Dashboard
+            </a>
+
+            <h1 class="history-title">
+                Diagnosis History
+            </h1>
+
+            {% if history %}
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Disease</th>
+                        <th>Confidence</th>
+                        <th>Drug</th>
+                        <th>Advice</th>
+                        <th>Date</th>
+                        <th>Export</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in history %}
+
+                    <tr>
+
+                        <td>{{ item.disease }}</td>
+
+                        <td>{{ item.confidence }}%</td>
+
+                        <td>{{ item.drug_name }}</td>
+
+                        <td>{{ item.advice }}</td>
+
+                        <td>{{ item.created_at }}</td>
+
+                        <td>
+
+                            <a
+                               class="download-btn"
+                               href="/download_report/{{ item.id }}">
+
+                               Download PDF
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="empty">
+
+                <h3>No diagnosis history found</h3>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

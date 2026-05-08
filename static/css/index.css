@@ -1,0 +1,463 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family: 'Segoe UI', sans-serif;
+
+    background:#0f172a;
+
+    color:white;
+
+    overflow-x:hidden;
+}
+
+/* ======================
+   LOADER
+====================== */
+
+#loader{
+
+    position:fixed;
+
+    width:100%;
+
+    height:100vh;
+
+    background:#020617;
+
+    z-index:99999;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+}
+
+.heartbeat{
+
+    font-size:80px;
+
+    color:#00ffd5;
+
+    animation: pulse 1s infinite;
+}
+
+#loader h2{
+
+    margin-top:20px;
+
+    color:white;
+}
+
+/* ======================
+   HEADER
+====================== */
+
+header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 8%;
+
+    background:rgba(255,255,255,0.05);
+
+    backdrop-filter:blur(10px);
+
+    position:sticky;
+
+    top:0;
+
+    z-index:1000;
+}
+
+.logo{
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    color:#00ffd5;
+}
+
+.logo i{
+    margin-right:10px;
+}
+
+nav a{
+
+    color:white;
+
+    text-decoration:none;
+
+    margin-left:25px;
+
+    transition:0.3s;
+}
+
+nav a:hover{
+
+    color:#00ffd5;
+}
+
+/* ======================
+   HERO
+====================== */
+
+.hero{
+
+    min-height:90vh;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 8%;
+
+    position:relative;
+}
+
+.hero-left{
+
+    width:50%;
+
+    z-index:10;
+}
+
+.hero-left h1{
+
+    font-size:60px;
+
+    line-height:1.2;
+
+    margin-bottom:25px;
+
+    color:#00ffd5;
+}
+
+.hero-left p{
+
+    font-size:20px;
+
+    color:#d1d5db;
+
+    line-height:1.8;
+
+    margin-bottom:40px;
+}
+
+/* ======================
+   BUTTONS
+====================== */
+
+.hero-buttons{
+
+    display:flex;
+
+    gap:20px;
+}
+
+.btn{
+
+    padding:15px 30px;
+
+    border-radius:50px;
+
+    text-decoration:none;
+
+    font-weight:bold;
+
+    transition:0.4s;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.login-btn{
+
+    background:#00ffd5;
+
+    color:#000;
+}
+
+.register-btn{
+
+    border:2px solid #00ffd5;
+
+    color:#00ffd5;
+}
+
+.btn:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 10px 20px rgba(0,255,213,0.4);
+}
+
+/* ======================
+   HERO RIGHT
+====================== */
+
+.hero-right{
+
+    width:40%;
+
+    display:flex;
+
+    justify-content:center;
+}
+
+.medical-card{
+
+    width:320px;
+
+    padding:40px;
+
+    border-radius:25px;
+
+    background:rgba(255,255,255,0.05);
+
+    backdrop-filter:blur(12px);
+
+    text-align:center;
+
+    box-shadow:0 0 30px rgba(0,255,213,0.2);
+
+    animation: floating 4s infinite ease-in-out;
+}
+
+.icon-box{
+
+    width:100px;
+
+    height:100px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    background:#00ffd5;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.icon-box i{
+
+    font-size:50px;
+
+    color:#000;
+}
+
+/* ======================
+   FEATURES
+====================== */
+
+.features{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:30px;
+
+    padding:80px 8%;
+
+    flex-wrap:wrap;
+}
+
+.feature-box{
+
+    width:300px;
+
+    background:rgba(255,255,255,0.05);
+
+    padding:40px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    transition:0.4s;
+}
+
+.feature-box:hover{
+
+    transform:translateY(-10px);
+
+    background:rgba(0,255,213,0.1);
+}
+
+.feature-box i{
+
+    font-size:50px;
+
+    color:#00ffd5;
+
+    margin-bottom:20px;
+}
+
+/* ======================
+   FOOTER
+====================== */
+
+footer{
+
+    background:#020617;
+
+    padding:50px 8%;
+
+    text-align:center;
+}
+
+.social-icons{
+
+    margin-top:20px;
+}
+
+.social-icons i{
+
+    font-size:24px;
+
+    margin:0 10px;
+
+    color:#00ffd5;
+
+    transition:0.3s;
+}
+
+.social-icons i:hover{
+
+    transform:scale(1.3);
+}
+
+/* ======================
+   ANIMATION
+====================== */
+
+.circles span{
+
+    position:absolute;
+
+    display:block;
+
+    width:25px;
+
+    height:25px;
+
+    background:rgba(0,255,213,0.2);
+
+    border-radius:50%;
+
+    animation: move 15s linear infinite;
+
+    bottom:-150px;
+}
+
+.circles span:nth-child(1){left:10%;animation-duration:10s;}
+.circles span:nth-child(2){left:30%;animation-duration:14s;}
+.circles span:nth-child(3){left:50%;animation-duration:18s;}
+.circles span:nth-child(4){left:70%;animation-duration:12s;}
+.circles span:nth-child(5){left:90%;animation-duration:20s;}
+
+@keyframes move{
+
+    0%{
+        transform:translateY(0) rotate(0);
+        opacity:1;
+    }
+
+    100%{
+        transform:translateY(-1200px) rotate(720deg);
+        opacity:0;
+    }
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.2);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+@keyframes floating{
+
+    0%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-20px);
+    }
+
+    100%{
+        transform:translateY(0);
+    }
+}
+
+/* ======================
+   RESPONSIVE
+====================== */
+
+@media(max-width:900px){
+
+    .hero{
+
+        flex-direction:column;
+
+        text-align:center;
+
+        padding-top:80px;
+    }
+
+    .hero-left,
+    .hero-right{
+
+        width:100%;
+    }
+
+    .hero-left h1{
+
+        font-size:40px;
+    }
+
+    .hero-buttons{
+
+        justify-content:center;
+    }
+
+    header{
+
+        flex-direction:column;
+
+        gap:20px;
+    }
+}

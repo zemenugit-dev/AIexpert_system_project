@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="logo">
+        <i class="fa-solid fa-user-shield"></i>
+        <h2>Admin Panel</h2>
+    </div>
+
+    <nav class="menu">
+
+        <a href="/admin/dashboard" class="active">
+            <i class="fa-solid fa-gauge"></i> Dashboard
+        </a>
+
+        <a href="/admin/users">
+            <i class="fa-solid fa-users"></i> Users
+        </a>
+
+       
+
+        <a href="/logout">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+
+    </nav>
+
+</aside>
+
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+
+        <h1>Admin Dashboard</h1>
+
+        <div class="admin-info">
+
+            <i class="fa-solid fa-user"></i>
+
+            <!-- dynamic admin name -->
+            <span>{{ name }}</span>
+
+        </div>
+
+    </header>
+
+
+    <!-- STATS CARDS -->
+    <section class="cards">
+
+        <div class="card">
+            <i class="fa-solid fa-users"></i>
+            <h3>Users</h3>
+            <p>{{ total_users if total_users else 0 }}</p>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-stethoscope"></i>
+            <h3>Diagnoses</h3>
+            <p>{{ total_diagnoses if total_diagnoses else 0 }}</p>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-virus"></i>
+            <h3>Diseases</h3>
+            <p>{{ total_diseases if total_diseases else 0 }}</p>
+        </div>
+
+        <div class="card">
+            <i class="fa-solid fa-file-pdf"></i>
+            <h3>Reports</h3>
+            <p>{{ total_reports if total_reports else 0 }}</p>
+        </div>
+
+    </section>
+
+
+    <!-- CONTENT AREA -->
+    <section class="content">
+
+        <div class="box">
+
+            <h2>System Overview</h2>
+
+            <p>
+                AI Medical Expert System admin controls users, diseases,
+                questions, and diagnosis reports with Prolog-based reasoning.
+            </p>
+
+        </div>
+
+        <div class="box">
+
+            <h2>Quick Actions</h2>
+
+            <button onclick="location.href='/admin/diseases'">
+                Add Disease
+            </button>
+
+            <button onclick="location.href='/admin/questions'">
+                Add Question
+            </button>
+
+            <button onclick="location.href='/history'">
+                View Reports
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+/* =========================
+   PAGE BACKGROUND
+========================= */
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #4e72bb;
+}
+
+/* =========================
+   CENTER FORM BOX
+========================= */
+.container {
+    width: 380px;
+    margin: 80px auto;
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+.back-btn {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    padding: 10px;
+    background: #80ca09;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 24px;
+    transition: 0.3s;
+    width: 200px;
+    margin-left: 1500px;
+    margin-right: 10%;
+}
+
+.back-btn:hover {
+    background: #04bb60;
+}
+/* =========================
+   TITLE
+========================= */
+h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #111827;
+}
+
+/* =========================
+   INPUT FIELDS
+========================= */
+input {
+    width: 50%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+ margin-left: 500px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+
+    font-size: 14px;
+    outline: none;
+}
+
+/* FOCUS (SUBTLE) */
+input:focus {
+    border-color: #3b82f6;
+}
+
+/* =========================
+   BUTTON
+========================= */
+button {
+    width: 30%;
+    padding: 10px;
+     margin-left: 600px;
+    background: #2563eb;
+    color: white;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+/* =========================
+   SIMPLE LAYOUT CLEANUP
+========================= */
+form {
+    display: block;
+}
+
+/* spacing fix */
+br {
+    display: none; /* removes ugly spacing from <br> */
+}

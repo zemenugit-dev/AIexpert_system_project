@@ -1,0 +1,102 @@
+/* PAGE BACKGROUND */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CONTAINER CARD */
+.container {
+    width: 420px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* TITLE */
+h2 {
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+    animation: slideDown 0.6s ease;
+}
+
+/* LABEL */
+label {
+    color: white;
+    font-size: 14px;
+    margin-top: 10px;
+    display: block;
+}
+
+/* INPUT FIELDS */
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+/* INPUT FOCUS ANIMATION */
+input:focus, select:focus {
+    transform: scale(1.03);
+    box-shadow: 0 0 10px #00c6ff;
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+/* BUTTON HOVER ANIMATION */
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(0,198,255,0.6);
+}
+
+/* CANCEL LINK */
+a {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    color: #fff;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+a:hover {
+    color: #00c6ff;
+    letter-spacing: 1px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Diagnosis Questions</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/user_questions.css') }}">
+</head>
+
+<body>
+  <a href="{{ url_for('dashboard') }}" class="back-btn">
+    Back to Dashboard
+</a>
+<div class="container">
+
+    <div class="top-box">
+        <h1>Medical Diagnosis Questions</h1>
+        <p>Please answer all questions carefully</p>
+    </div>
+
+
+  
+    <form action="/submit_answers"
+          method="POST"
+          id="diagnosisForm">
+
+        {% for q in questions %}
+
+        <div class="question-card">
+
+            <h3>{{ q.question_text }}</h3>
+
+            <div class="options">
+
+                <label class="radio-box">
+                    <input type="radio"
+                           name="q{{ q.id }}"
+                           value="yes"
+                           required>
+
+                    <span>Yes</span>
+                </label>
+
+                <label class="radio-box">
+                    <input type="radio"
+                           name="q{{ q.id }}"
+                           value="no">
+
+                    <span>No</span>
+                </label>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        <button type="submit" class="submit-btn">
+            Submit Diagnosis
+        </button>
+
+    </form>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/user_questions.js') }}"></script>
+
+</body>
+</html>

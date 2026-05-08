@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Expert System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+
+<body>
+
+<div class="box">
+
+    <h2>Login</h2>
+
+    <!-- SERVER ERROR -->
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <!-- LOGIN FORM -->
+    <form method="POST" action="/login" onsubmit="return validateForm()">
+
+        <!-- EMAIL -->
+        <input type="email"
+               id="email"
+               name="email"
+               placeholder="Email"
+               onkeyup="validateEmail()"
+               required>
+
+        <div id="emailMsg" class="error"></div>
+
+        <!-- PASSWORD -->
+        <input type="password"
+               id="password"
+               name="password"
+               placeholder="Password"
+               onkeyup="validatePassword()"
+               required>
+
+        <div id="passMsg" class="error"></div>
+
+        <!-- TOGGLE PASSWORD -->
+        <button type="button" onclick="togglePassword()">
+            Show / Hide Password
+        </button>
+
+        <br><br>
+
+        <!-- LOGIN BUTTON -->
+        <button type="submit">Login</button>
+
+    </form>
+
+    <!-- REGISTER LINK -->
+    <div class="link">
+        Don't have an account?
+        <a href="/register">Register</a>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+
+</body>
+</html>

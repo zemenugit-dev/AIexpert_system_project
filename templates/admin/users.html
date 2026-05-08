@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Users</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin_users.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>User Management</h1>
+
+    
+    </div>
+<a href="{{ url_for('create_user') }}" class="btn">
+    Create New User
+</a>
+<a href="{{ url_for('admin_dashboard') }}" class="back-btn">Back to Dashboard</a>
+    <!-- TABLE -->
+    <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+
+        {% for u in users %}
+        <tr>
+
+            <td>{{ u.id }}</td>
+            <td>{{ u.name }}</td>
+            <td>{{ u.email }}</td>
+
+            <td>
+
+                <a href="/admin/edit_user/{{ u.id }}">Edit</a>
+                
+                <a href="/admin/delete_user/{{ u.id }}"
+                   onclick="return confirm('Delete user?')">
+                   Delete
+                </a>
+
+            </td>
+
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</div>
+<script src="{{ url_for('static', filename='js/form_validation.js') }}"></script>
+</body>
+</html>

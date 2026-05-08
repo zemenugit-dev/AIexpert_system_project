@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create User</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/create_user.css') }}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Create New User</h2>
+
+    <!-- IMPORTANT: admin route -->
+<form method="POST" action="{{ url_for('create_user') }}">
+        <!-- Full Name -->
+        <label>Full Name</label>
+        <input type="text" name="name" required placeholder="Enter full name">
+
+        <!-- Email -->
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="Enter email">
+
+        <!-- Password -->
+        <label>Password</label>
+        <input type="password" name="password" required placeholder="Enter password">
+
+        <!-- Role -->
+        <label>Role</label>
+        <select name="role" required>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+        </select>
+
+        <button type="submit">Create User</button>
+
+        <!-- BACK TO USERS LIST -->
+<a href="{{ url_for('admin_users') }}">Cancel</a>
+    </form>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/create_validation.js') }}"></script>
+</body>
+
+</html>

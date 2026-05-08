@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Expert System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+</head>
+
+<body>
+
+<div class="box">
+
+    <h2>Create Account</h2>
+
+    <!-- =========================
+         SERVER ERROR DISPLAY
+    ========================== -->
+    {% if error %}
+        <p style="color:red; text-align:center;">{{ error }}</p>
+    {% endif %}
+
+    <!-- =========================
+         REGISTER FORM
+    ========================== -->
+    <form method="POST" action="/register" onsubmit="return validateForm()">
+
+        <!-- NAME -->
+        <input type="text"
+               id="name"
+               name="name"
+               placeholder="Full Name"
+               onkeyup="validateName()"
+               required>
+
+        <div id="nameMsg" class="error"></div>
+
+        <!-- EMAIL -->
+        <input type="email"
+               id="email"
+               name="email"
+               placeholder="Email Address"
+               onkeyup="validateEmail()"
+               required>
+
+        <div id="emailMsg" class="error"></div>
+
+        <!-- PASSWORD -->
+        <input type="password"
+               id="password"
+               name="password"
+               placeholder="Password"
+               onkeyup="validatePassword()"
+               required>
+
+        <div id="passMsg" class="error"></div>
+
+        <!-- PASSWORD TOGGLE -->
+        <button type="button" onclick="togglePassword()">
+            Show / Hide Password
+        </button>
+
+        <br><br>
+
+        <!-- SUBMIT -->
+        <button type="submit">Register</button>
+
+    </form>
+
+    <!-- LOGIN LINK -->
+    <div class="link">
+        Already have an account?
+        <a href="/login">Login</a>
+    </div>
+
+</div>
+
+<!-- JS VALIDATION -->
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
+
+</body>
+</html>

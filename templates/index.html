@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Medical Expert System</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/index.css') }}">
+
+    <!-- ICONS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- LOADER -->
+    <div id="loader">
+
+        <div class="heartbeat">
+            <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+
+        <h2>Loading Medical AI...</h2>
+
+    </div>
+
+    <!-- HEADER -->
+    <header>
+
+        <div class="logo">
+
+            <i class="fa-solid fa-stethoscope"></i>
+
+            <span>Medical AI Expert System</span>
+
+        </div>
+
+        <nav>
+
+            <a href="/">Home</a>
+
+            <a href="/login">Login</a>
+
+            <a href="/register">Register</a>
+
+        </nav>
+
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+
+        <!-- Floating Circles -->
+        <div class="circles">
+
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </div>
+
+        <!-- LEFT -->
+        <div class="hero-left">
+
+            <h1 id="typing-text"></h1>
+
+            <p>
+
+                Intelligent disease diagnosis platform using
+                Flask, Prolog, Artificial Intelligence,
+                and SQLite database technologies.
+
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="/login" class="btn login-btn">
+
+                    <i class="fa-solid fa-right-to-bracket"></i>
+
+                    Login
+
+                </a>
+
+                <a href="/register" class="btn register-btn">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                    Register
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="hero-right">
+
+            <div class="medical-card">
+
+                <div class="icon-box">
+
+                    <i class="fa-solid fa-heart-pulse"></i>
+
+                </div>
+
+                <h2>AI Diagnosis</h2>
+
+                <p>
+
+                    Fast, secure and intelligent
+                    disease prediction system.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+
+        <div class="feature-box">
+
+            <i class="fa-solid fa-brain"></i>
+
+            <h3>AI Engine</h3>
+
+            <p>Smart Prolog-based diagnosis engine.</p>
+
+        </div>
+
+        <div class="feature-box">
+
+            <i class="fa-solid fa-database"></i>
+
+            <h3>Secure Database</h3>
+
+            <p>SQLite secure medical records system.</p>
+
+        </div>
+
+        <div class="feature-box">
+
+            <i class="fa-solid fa-file-pdf"></i>
+
+            <h3>PDF Reports</h3>
+
+            <p>Export professional medical reports.</p>
+
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-content">
+
+            <h3>🧠 Medical AI Expert System</h3>
+
+            <p>
+
+                Modern Intelligent Healthcare Solution
+
+            </p>
+
+            <div class="social-icons">
+
+                <i class="fab fa-github"></i>
+                <i class="fab fa-linkedin"></i>
+                <i class="fab fa-twitter"></i>
+
+            </div>
+
+        </div>
+
+        <div class="copyright">
+
+            © 2026 AI Medical Expert System | All Rights Reserved
+
+        </div>
+
+    </footer>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+</body>
+</html>
