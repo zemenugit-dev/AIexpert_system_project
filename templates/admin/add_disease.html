@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Add Disease</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_disease_form.css') }}">
+</head>
+
+<body>
+
+<h1>Add Disease</h1>
+
+<form method="POST">
+
+    <input type="text"
+           name="disease"
+           placeholder="Disease Name"
+           required>
+
+    <input type="text"
+           name="drug_name"
+           placeholder="Drug Name"
+           required>
+
+    <textarea name="advice"
+              placeholder="Advice"
+              required></textarea>
+
+    <button type="submit">
+        Save Disease
+    </button>
+
+</form>
+
+</body>
+</html>

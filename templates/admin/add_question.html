@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Add Question</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin_questions.css') }}">
+
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <div class="card">
+
+        <h2>Add Question</h2>
+
+        <form method="POST">
+
+            <label>Question Text</label>
+
+            <input type="text"
+                   name="question_text"
+                   placeholder="Do you have fever?"
+                   required>
+
+            <label>Symptom Key</label>
+
+            <input type="text"
+                   name="symptom_key"
+                   placeholder="fever"
+                   required>
+
+            <button type="submit">
+                Save Question
+            </button>
+
+        </form>
+
+        <a href="/admin/questions" class="back-btn">
+            ← Back
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

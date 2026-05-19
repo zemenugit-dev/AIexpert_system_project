@@ -1,10 +1,5 @@
 
-from flask import render_template, request, redirect, url_for
-from database.database import get_connection
-from werkzeug.security import generate_password_hash
-
-
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session, url_for, make_response
 from database.database import init_db, seed_questions, seed_treatments, get_connection
 from werkzeug.security import generate_password_hash, check_password_hash
 from pyswip import Prolog
@@ -13,6 +8,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import letter
 from io import BytesIO
 import os
+import pandas as pd
 
 
 
@@ -132,6 +128,9 @@ def admin_dashboard():
     conn = get_connection()
     cur = conn.cursor()
 
+    # =========================
+    # BASIC STATS
+    # =========================
     cur.execute("SELECT COUNT(*) FROM users")
     total_users = cur.fetchone()[0]
 
@@ -141,6 +140,30 @@ def admin_dashboard():
     cur.execute("SELECT COUNT(DISTINCT disease) FROM diagnosis_history")
     total_diseases = cur.fetchone()[0]
 
+    # =========================
+    # CHART 1: DISEASE FREQUENCY
+    # =========================
+    cur.execute("""
+        SELECT disease, COUNT(*) as count
+        FROM diagnosis_history
+        GROUP BY disease
+        ORDER BY count DESC
+        LIMIT 5
+    """)
+    disease_data = cur.fetchall()
+
+    # =========================
+    # CHART 2: DAILY DIAGNOSIS TREND
+    # =========================
+    cur.execute("""
+        SELECT DATE(created_at) as date, COUNT(*) as count
+        FROM diagnosis_history
+        GROUP BY DATE(created_at)
+        ORDER BY date DESC
+        LIMIT 7
+    """)
+    trend_data = cur.fetchall()
+
     conn.close()
 
     return render_template(
@@ -148,9 +171,10 @@ def admin_dashboard():
         name=session["name"],
         total_users=total_users,
         total_diagnoses=total_diagnoses,
-        total_diseases=total_diseases
+        total_diseases=total_diseases,
+        disease_data=disease_data,
+        trend_data=trend_data
     )
-
 # =========================
 # USER DASHBOARD
 # =========================
@@ -433,17 +457,7 @@ def download_report(history_id):
     return response
 
 
-@app.route('/admin/diseases')
-def admin_diseases():
-    conn = get_connection()
-    cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM diseases")
-    diseases = cursor.fetchall()
-
-    conn.close()
-
-    return render_template("admin_diseases.html", diseases=diseases)
 
 
 @app.route('/admin/create_user', methods=['GET', 'POST'])
@@ -456,14 +470,14 @@ def create_user():
         password = request.form['password']
         role = request.form['role']
 
-        # 🔐 hash password (important)
+        #  hash password (important)
         hashed_password = generate_password_hash(password)
 
-        # 🗄️ connect DB
+        # connect DB
         conn = get_connection()
         cursor = conn.cursor()
 
-        # 💾 insert user
+        #  insert user
         cursor.execute("""
             INSERT INTO users (name, email, password, role)
             VALUES (?, ?, ?, ?)
@@ -475,6 +489,462 @@ def create_user():
         return redirect(url_for('admin_users'))
 
     return render_template('admin/create_users.html')
+#add routes for editing and deleting questions here (similar to above)
+
+# =========================
+# ADMIN QUESTIONS
+# =========================
+
+@app.route("/admin/questions")
+def admin_questions():
+
+    if not is_admin():
+        return redirect("/login")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM questions")
+    questions = cur.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "admin/questions.html",
+        questions=questions
+    )
+
+
+# =========================
+# ADD QUESTION
+# =========================
+@app.route("/admin/add_question", methods=["GET", "POST"])
+def add_question():
+
+    if not is_admin():
+        return redirect("/login")
+
+    if request.method == "POST":
+
+        question_text = request.form["question_text"]
+        symptom_key = request.form["symptom_key"]
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            INSERT INTO questions
+            (question_text, symptom_key)
+            VALUES (?, ?)
+        """, (question_text, symptom_key))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/admin/questions")
+
+    return render_template("admin/add_question.html")
+
+
+# =========================
+# EDIT QUESTION
+# =========================
+@app.route("/admin/edit_question/<int:id>", methods=["GET", "POST"])
+def edit_question(id):
+
+    if not is_admin():
+        return redirect("/login")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+
+        question_text = request.form["question_text"]
+        symptom_key = request.form["symptom_key"]
+
+        cur.execute("""
+            UPDATE questions
+            SET question_text=?, symptom_key=?
+            WHERE id=?
+        """, (question_text, symptom_key, id))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/admin/questions")
+
+    cur.execute("SELECT * FROM questions WHERE id=?", (id,))
+    question = cur.fetchone()
+
+    conn.close()
+
+    return render_template(
+        "admin/edit_question.html",
+        question=question
+    )
+
+
+# =========================
+# DELETE QUESTION
+# =========================
+@app.route("/admin/delete_question/<int:id>")
+def delete_question(id):
+
+    if not is_admin():
+        return redirect("/login")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        "DELETE FROM questions WHERE id=?",
+        (id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin/questions")
+
+
+# =========================
+# ADMIN DISEASES
+# =========================
+@app.route("/admin/diseases")
+def admin_diseases():
+
+    if not is_admin():
+        return redirect("/login")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM treatments")
+    diseases = cur.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "admin/diseases.html",
+        diseases=diseases
+    )
+    
+    # =========================
+# ADD DISEASE
+# =========================
+@app.route("/admin/add_disease", methods=["GET", "POST"])
+def add_disease():
+
+    if not is_admin():
+        return redirect("/login")
+
+    if request.method == "POST":
+
+        disease = request.form["disease"]
+        drug_name = request.form["drug_name"]
+        advice = request.form["advice"]
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            INSERT INTO treatments
+            (disease, drug_name, advice)
+            VALUES (?, ?, ?)
+        """, (disease, drug_name, advice))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/admin/diseases")
+
+    return render_template("admin/add_disease.html")
+
+# =========================
+# EDIT DISEASE
+# =========================
+@app.route("/admin/edit_disease/<int:id>", methods=["GET", "POST"])
+def edit_disease(id):
+
+    if not is_admin():
+        return redirect("/login")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+
+        disease = request.form["disease"]
+        drug_name = request.form["drug_name"]
+        advice = request.form["advice"]
+
+        cur.execute("""
+            UPDATE treatments
+            SET disease=?,
+                drug_name=?,
+                advice=?
+            WHERE id=?
+        """, (disease, drug_name, advice, id))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/admin/diseases")
+
+    cur.execute("SELECT * FROM treatments WHERE id=?", (id,))
+    disease = cur.fetchone()
+
+    conn.close()
+
+    return render_template(
+        "admin/edit_disease.html",
+        disease=disease
+    )
+    
+    
+    # =========================
+# DELETE DISEASE
+# =========================
+@app.route("/admin/delete_disease/<int:id>")
+def delete_disease(id):
+
+    if not is_admin():
+        return redirect("/login")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        "DELETE FROM treatments WHERE id=?",
+        (id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/admin/diseases")
+
+
+
+# =========================
+# ADMIN REPORTS
+# =========================
+@app.route("/admin/reports")
+def admin_reports():
+
+    if not is_admin():
+        return redirect("/login")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT dh.id,
+               u.name AS user_name,
+               dh.disease,
+               dh.confidence,
+               dh.drug_name,
+               dh.advice,
+               dh.created_at
+        FROM diagnosis_history dh
+        JOIN users u ON dh.user_id = u.id
+        ORDER BY dh.created_at DESC
+    """)
+
+    reports = cur.fetchall()
+    conn.close()
+
+    return render_template("admin/reports.html", reports=reports)
+
+
+
+@app.route("/admin/export_all_reports_pdf")
+def export_all_reports_pdf():
+
+    if not is_admin():
+        return redirect("/login")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT dh.id,
+               u.name AS user_name,
+               dh.disease,
+               dh.confidence,
+               dh.drug_name,
+               dh.advice,
+               dh.created_at
+        FROM diagnosis_history dh
+        JOIN users u ON dh.user_id = u.id
+        ORDER BY dh.created_at DESC
+    """)
+
+    reports = cur.fetchall()
+    conn.close()
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+
+    styles = getSampleStyleSheet()
+
+    elements = []
+
+    # TITLE
+    elements.append(Paragraph("ALL DIAGNOSIS REPORTS", styles["Title"]))
+    elements.append(Spacer(1, 12))
+
+    # =========================
+    # TABLE DATA
+    # =========================
+    table_data = []
+
+    # HEADER ROW
+    table_data.append([
+        "ID",
+        "User",
+        "Disease",
+        "Confidence",
+        "Drug",
+        "Advice",
+        "Date"
+    ])
+
+    # DATA ROWS
+    for r in reports:
+        table_data.append([
+            str(r["id"]),
+            r["user_name"],
+            r["disease"],
+            str(r["confidence"]) + "%",
+            r["drug_name"],
+            r["advice"],
+            str(r["created_at"])
+        ])
+
+    # TABLE STYLE
+    from reportlab.platypus import Table, TableStyle
+    from reportlab.lib import colors
+
+    table = Table(table_data)
+
+    table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2b7cff")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), 10),
+
+        ("BOTTOMPADDING", (0, 0), (-1, 0), 8),
+        ("TOPPADDING", (0, 0), (-1, 0), 8),
+
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+
+        ("BACKGROUND", (0, 1), (-1, -1), colors.whitesmoke),
+    ]))
+
+    elements.append(table)
+
+    doc.build(elements)
+
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = make_response(pdf)
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = "attachment; filename=all_reports_table.pdf"
+
+    return response
+
+@app.route("/admin/export_reports_csv")
+def export_reports_csv():
+
+    if not is_admin():
+        return redirect("/login")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT dh.id,
+               u.name AS user_name,
+               dh.disease,
+               dh.confidence,
+               dh.drug_name,
+               dh.advice,
+               dh.created_at
+        FROM diagnosis_history dh
+        JOIN users u ON dh.user_id = u.id
+        ORDER BY dh.created_at DESC
+    """)
+
+    rows = cur.fetchall()
+    conn.close()
+
+    # Convert to DataFrame
+    df = pd.DataFrame(rows)
+
+    # Convert to CSV string
+    csv_data = df.to_csv(index=False)
+
+    response = make_response(csv_data)
+    response.headers["Content-Disposition"] = "attachment; filename=diagnosis_reports.csv"
+    response.headers["Content-Type"] = "text/csv"
+
+    return response
+
+@app.route("/admin/export_report_pdf/<int:report_id>")
+def export_report_pdf(report_id):
+
+    if not is_admin():
+        return redirect("/login")
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT dh.*, u.name AS user_name
+        FROM diagnosis_history dh
+        JOIN users u ON dh.user_id = u.id
+        WHERE dh.id=?
+    """, (report_id,))
+
+    report = cur.fetchone()
+    conn.close()
+
+    if not report:
+        return "Report not found"
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+
+    styles = getSampleStyleSheet()
+
+    content = [
+        Paragraph("AI Medical Diagnosis Report", styles["Title"]),
+        Spacer(1, 12),
+
+        Paragraph(f"User: {report['user_name']}", styles["Normal"]),
+        Paragraph(f"Disease: {report['disease']}", styles["Normal"]),
+        Paragraph(f"Confidence: {report['confidence']}%", styles["Normal"]),
+        Paragraph(f"Drug: {report['drug_name']}", styles["Normal"]),
+        Paragraph(f"Advice: {report['advice']}", styles["Normal"]),
+        Paragraph(f"Date: {report['created_at']}", styles["Normal"]),
+    ]
+
+    doc.build(content)
+
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = make_response(pdf)
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = "attachment; filename=report.pdf"
+
+    return response
 # =========================
 # LOGOUT
 # =========================

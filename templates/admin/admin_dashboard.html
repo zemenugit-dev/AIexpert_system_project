@@ -26,19 +26,33 @@
 
     <nav class="menu">
 
-        <a href="/admin/dashboard" class="active">
-            <i class="fa-solid fa-gauge"></i> Dashboard
-        </a>
+        <nav class="menu">
 
-        <a href="/admin/users">
-            <i class="fa-solid fa-users"></i> Users
-        </a>
+    <a href="/admin/dashboard" class="active">
+        <i class="fa-solid fa-gauge"></i> Dashboard
+    </a>
 
-       
+    <a href="/admin/users">
+        <i class="fa-solid fa-users"></i> Users
+    </a>
 
-        <a href="/logout">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout
-        </a>
+    <a href="/admin/questions">
+        <i class="fa-solid fa-circle-question"></i> Questions
+    </a>
+
+    <a href="/admin/diseases">
+        <i class="fa-solid fa-virus"></i> Treatments
+    </a>
+
+    <a href="/admin/reports">
+        <i class="fa-solid fa-file-pdf"></i> Reports
+    </a>
+   
+    <a href="/logout">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+
+</nav>
 
     </nav>
 
@@ -128,8 +142,66 @@
         </div>
 
     </section>
+    <!-- =========================
+     ANALYTICS CHARTS
+========================= -->
+<section class="charts">
+
+    <div class="chart-box">
+        <h2>📊 Most Common Diseases</h2>
+        <canvas id="diseaseChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+        <h2>📈 Daily Diagnosis Trend</h2>
+        <canvas id="trendChart"></canvas>
+    </div>
+
+</section>
 
 </main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script>
+    // =========================
+    // DATA FROM FLASK
+    // =========================
+    const diseaseLabels = {{ disease_data | map(attribute=0) | list | tojson }};
+    const diseaseCounts = {{ disease_data | map(attribute=1) | list | tojson }};
+
+    const trendLabels = {{ trend_data | map(attribute=0) | list | tojson }};
+    const trendCounts = {{ trend_data | map(attribute=1) | list | tojson }};
+
+    // =========================
+    // BAR CHART - DISEASES
+    // =========================
+    new Chart(document.getElementById("diseaseChart"), {
+        type: "bar",
+        data: {
+            labels: diseaseLabels,
+            datasets: [{
+                label: "Top Diseases",
+                data: diseaseCounts,
+                backgroundColor: "#4e73df"
+            }]
+        }
+    });
+
+    // =========================
+    // LINE CHART - TREND
+    // =========================
+    new Chart(document.getElementById("trendChart"), {
+        type: "line",
+        data: {
+            labels: trendLabels,
+            datasets: [{
+                label: "Daily Diagnoses",
+                data: trendCounts,
+                borderColor: "#1cc88a",
+                fill: false
+            }]
+        }
+    });
+</script>
 </body>
 </html>

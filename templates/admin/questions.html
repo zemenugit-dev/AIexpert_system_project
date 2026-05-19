@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Questions Management</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/Admin_questionsadmin.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Questions Management</h1>
+
+    <a href="/admin/add_question" class="add-btn">
+        + Add Question
+    </a>
+
+    <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Question</th>
+            <th>Symptom Key</th>
+            <th>Action</th>
+        </tr>
+
+        {% for q in questions %}
+
+        <tr>
+
+            <td>{{ q.id }}</td>
+
+            <td>{{ q.question_text }}</td>
+
+            <td>{{ q.symptom_key }}</td>
+
+            <td>
+
+                <a href="/admin/edit_question/{{ q.id }}">
+                    Edit
+                </a>
+
+                |
+
+                <a href="/admin/delete_question/{{ q.id }}"
+                   onclick="return confirm('Delete question?')">
+
+                   Delete
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</body>
+</html>

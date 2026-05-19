@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Edit Question</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin_questions.css') }}">
+
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <div class="card">
+
+        <h2>Edit Question</h2>
+
+        <form method="POST">
+
+            <label>Question Text</label>
+
+            <input type="text"
+                   name="question_text"
+                   value="{{ question.question_text }}"
+                   required>
+
+            <label>Symptom Key</label>
+
+            <input type="text"
+                   name="symptom_key"
+                   value="{{ question.symptom_key }}"
+                   required>
+
+            <button type="submit">
+                Update Question
+            </button>
+
+        </form>
+
+        <a href="/admin/questions" class="back-btn">
+            ← Back
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

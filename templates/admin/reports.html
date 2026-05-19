@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Reports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📊 Diagnosis Reports</h1>
+
+    <!-- GLOBAL EXPORT -->
+    <a href="/admin/export_reports_csv">📥 Export CSV</a>
+    <a href="/admin/export_all_reports_pdf">
+    📄 Download ALL PDF
+</a>
+
+    <table>
+
+        <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Disease</th>
+            <th>Confidence</th>
+            <th>Drug</th>
+            <th>Advice</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+
+        {% for r in reports %}
+
+        <tr>
+            <td>{{ r.id }}</td>
+            <td>{{ r.user_name }}</td>
+            <td>{{ r.disease }}</td>
+            <td>{{ r.confidence }}%</td>
+            <td>{{ r.drug_name }}</td>
+            <td>{{ r.advice }}</td>
+            <td>{{ r.created_at }}</td>
+
+            <td>
+                <a href="/admin/export_report_pdf/{{ r.id }}">
+                    📄 PDF
+                </a>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</body>
+</html>

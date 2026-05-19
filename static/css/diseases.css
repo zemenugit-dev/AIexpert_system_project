@@ -1,0 +1,136 @@
+/* =========================
+   GLOBAL RESET
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* =========================
+   PAGE BACKGROUND
+========================= */
+body {
+    background: #f4f7fb;
+    padding: 30px;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   TITLE
+========================= */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1e3a5f;
+    font-size: 28px;
+}
+
+/* =========================
+   ADD BUTTON
+========================= */
+.add-btn {
+    display: inline-block;
+    margin-bottom: 15px;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #2b7cff, #1e5eff);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(43, 124, 255, 0.3);
+}
+
+/* =========================
+   TABLE DESIGN
+========================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+/* HEADER */
+th {
+    background: #2b7cff;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+/* ROWS */
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+/* STRIPED ROWS */
+tr:nth-child(even) {
+    background: #f9fbff;
+}
+
+/* HOVER EFFECT */
+tr:hover {
+    background: #eef5ff;
+    transition: 0.2s;
+}
+
+/* =========================
+   ACTION LINKS
+========================= */
+td a {
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 5px;
+}
+
+/* EDIT */
+td a[href*="edit"] {
+    color: #1e88e5;
+}
+
+td a[href*="edit"]:hover {
+    color: #0d47a1;
+}
+
+/* DELETE */
+td a[href*="delete"] {
+    color: #e53935;
+}
+
+td a[href*="delete"]:hover {
+    color: #b71c1c;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+}

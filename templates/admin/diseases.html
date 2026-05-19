@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Diseases</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/diseases.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Disease Management</h1>
+
+    <a href="/admin/add_disease" class="add-btn">
+        Add Disease
+    </a>
+
+    <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Disease</th>
+            <th>Drug</th>
+            <th>Advice</th>
+            <th>Action</th>
+        </tr>
+
+        {% for d in diseases %}
+        <tr>
+
+            <td>{{ d.id }}</td>
+            <td>{{ d.disease }}</td>
+            <td>{{ d.drug_name }}</td>
+            <td>{{ d.advice }}</td>
+
+            <td>
+
+                <a href="/admin/edit_disease/{{ d.id }}">
+                    Edit
+                </a>
+
+                |
+
+                <a href="/admin/delete_disease/{{ d.id }}"
+                   onclick="return confirm('Delete disease?')">
+
+                    Delete
+
+                </a>
+
+            </td>
+
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</body>
+</html>
