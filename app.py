@@ -89,19 +89,22 @@ def register():
 # =========================
 # LOGIN (UPDATED & SAFE)
 # =========================
+# =========================
+# LOGIN
+# =========================
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
     if request.method == "POST":
 
-        # 💡 የፊደል መጠን ስህተትን ለመከላከል .strip().lower() ብቻ ተጨምሯል
+        # 💡 .strip().lower() ብቻ በመጠቀም የፊደል ስህተቶችን እናስተካክላለን
         email = request.form["email"].strip().lower()
         password = request.form["password"]
 
         conn = get_connection()
         cur = conn.cursor()
 
-        # 💡 የሊኑክስ ሰርቨርን የኬዝ-ሴንሲቲቪቲ ችግር ለመፍታት LOWER(email) ተጠቅመናል
+        # 💡 በሊኑክስ ላይ የኬዝ ስሜትን ለመከላከል LOWER(email) ተጠቅመናል
         cur.execute("SELECT * FROM users WHERE LOWER(email)=?", (email,))
         user = cur.fetchone()
         conn.close()
@@ -120,7 +123,6 @@ def login():
         return render_template("login.html", error="Invalid credentials")
 
     return render_template("login.html")
-
 # =========================
 # ADMIN DASHBOARD
 # =========================
