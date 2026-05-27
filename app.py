@@ -211,6 +211,9 @@ def questions():
 # =========================
 # DIAGNOSIS ENGINE (FIXED)
 # =========================
+# =========================
+# DIAGNOSIS ENGINE (STABLE & SECURE)
+# =========================
 @app.route("/submit_answers", methods=["POST"])
 def submit_answers():
 
@@ -222,23 +225,34 @@ def submit_answers():
     conn = get_connection()
     cur = conn.cursor()
 
+    # 1. Clear previous symptoms from Prolog
     list(prolog.query("retractall(symptom(_))"))
 
     symptoms_list = []
 
+    # 💡 DEBUGGING: ፎርሙ የላከውን መረጃ በሙሉ Render Log ላይ ያትማል
+    print("--- INCOMING FORM DATA ---")
+    print(request.form)
+    print("--------------------------")
+
+    # Load all questions to map answers
     cur.execute("SELECT * FROM questions")
     questions = cur.fetchall()
 
     for q in questions:
+        # HTML ፎርሙ ላይ name="q1", name="q2"... ስለሆነ እዚህም በተመሳሳይ ይፈልጋል
         answer = request.form.get(f"q{q['id']}")
 
-        if answer == "yes":
+        # 💡 የጃቫስክሪፕት ስህተትን ለመከላከል፡ የፊደል መጠንን ማስተካከል (yes/YES/Yes)
+        if answer and answer.strip().lower() == "yes":
             symptom = q["symptom_key"]
             symptoms_list.append(symptom)
             prolog.assertz(f"symptom('{symptom}')")
 
-    disease_list = ["malaria", "flu", "covid19", "common_cold"]
+    # 💡 ሎግ ላይ ምልክት የተደረገባቸውን ምልክቶች ማሳያ
+    print(f"🎯 Detected Symptoms for Prolog: {symptoms_list}")
 
+    disease_list = ["malaria", "flu", "covid19", "common_cold"]
     results = []
 
     for d in disease_list:
@@ -247,29 +261,38 @@ def submit_answers():
             if q:
                 score = int(q[0]["Score"])
                 results.append({"disease": d, "score": score})
-        except:
+        except Exception as e:
+            print(f"Prolog query error for {d}: {e}")
             continue
 
     disease = "Unknown"
-
     if results:
         results.sort(key=lambda x: x["score"], reverse=True)
-        # Ensure the string is normalized to lowercase to match the seeded treatments table
-        disease = results[0]["disease"].lower().strip()
+        # ከፍተኛ ውጤት ያገኘውን በሽታ መምረጥ (ውጤቱ ከ 0 በላይ ከሆነ)
+        if results[0]["score"] > 0:
+            disease = results[0]["disease"].lower().strip()
 
-    # 💡 FIX: Query using the strictly lowercase disease name
+    print(f"🏥 Diagnosed Disease: {disease}")
+
+    # Query the treatments table using lowercase matching
     cur.execute("SELECT drug_name, advice FROM treatments WHERE LOWER(disease)=?", (disease,))
     t = cur.fetchone()
 
-    # Capitalize the disease name for a beautiful UI display (e.g., 'malaria' -> 'Malaria')
     display_disease = disease.capitalize() if disease != "Unknown" else "Unknown"
-
     drug = t["drug_name"] if t else "Not found"
     advice = t["advice"] if t else "No advice"
 
+    # Save to user_answers table for full tracking (Optional but good)
+    for q in questions:
+        ans_val = request.form.get(f"q{q['id']}", "no")
+        cur.execute("""
+            INSERT INTO user_answers (user_id, question_id, answer)
+            VALUES (?, ?, ?)
+        """, (user_id, q["id"], ans_val))
+
+    # Save to diagnosis_history
     cur.execute("""
-        INSERT INTO diagnosis_history
-        (user_id, disease, confidence, drug_name, advice)
+        INSERT INTO diagnosis_history (user_id, disease, confidence, drug_name, advice)
         VALUES (?, ?, ?, ?, ?)
     """, (user_id, display_disease, 100, drug, advice))
 
