@@ -86,18 +86,23 @@ def register():
 # =========================
 # LOGIN
 # =========================
+# =========================
+# LOGIN (UPDATED & SAFE)
+# =========================
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
     if request.method == "POST":
 
-        email = request.form["email"]
+        # 💡 የፊደል መጠን ስህተትን ለመከላከል .strip().lower() ብቻ ተጨምሯል
+        email = request.form["email"].strip().lower()
         password = request.form["password"]
 
         conn = get_connection()
         cur = conn.cursor()
 
-        cur.execute("SELECT * FROM users WHERE email=?", (email,))
+        # 💡 የሊኑክስ ሰርቨርን የኬዝ-ሴንሲቲቪቲ ችግር ለመፍታት LOWER(email) ተጠቅመናል
+        cur.execute("SELECT * FROM users WHERE LOWER(email)=?", (email,))
         user = cur.fetchone()
         conn.close()
 

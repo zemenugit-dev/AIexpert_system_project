@@ -76,11 +76,12 @@ CREATE TABLE IF NOT EXISTS users (
     )
     """)
     # =========================
+   # =========================
     # SEED DEFAULT USERS (ADMIN & USER)
     # =========================
     from werkzeug.security import generate_password_hash
     
-    # Check if admin already exists
+    # 💡 ኢሜይሎቹ በትንሽ ፊደል መጻፋቸውን ያረጋግጡ
     cur.execute("SELECT COUNT(*) FROM users WHERE email='admin@example.com'")
     if cur.fetchone()[0] == 0:
         admin_pass = generate_password_hash("admin123")
@@ -89,7 +90,6 @@ CREATE TABLE IF NOT EXISTS users (
             VALUES ('System Admin', 'admin@example.com', ?, 'admin')
         """, (admin_pass,))
         
-    # Check if standard user already exists    
     cur.execute("SELECT COUNT(*) FROM users WHERE email='user@example.com'")
     if cur.fetchone()[0] == 0:
         user_pass = generate_password_hash("user123")
@@ -98,8 +98,6 @@ CREATE TABLE IF NOT EXISTS users (
             VALUES ('Sample User', 'user@example.com', ?, 'user')
         """, (user_pass,))
         
-    print("✅ Sample Admin and User verified/inserted successfully")
-
     conn.commit()
     conn.close()
 
