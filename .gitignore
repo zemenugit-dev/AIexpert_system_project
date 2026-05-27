@@ -1,0 +1,5 @@
+# Ignore local SQLite runtime database files
+database/app.db
+database/*.db
+*.db-wal
+*.db-shm
