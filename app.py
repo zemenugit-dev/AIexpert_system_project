@@ -221,99 +221,81 @@ def questions():
 # =========================
 # DIAGNOSIS ENGINE (STABLE & SECURE)
 # =========================
+# =========================
+# DIAGNOSIS ENGINE (ROBUST FIX)
+# =========================
 @app.route("/submit_answers", methods=["POST"])
 def submit_answers():
-
     if not is_logged_in():
         return redirect("/login")
-
+    
     user_id = session["user_id"]
-
+    
     conn = get_connection()
     cur = conn.cursor()
-
-    # 1. Clear previous symptoms from Prolog
+    
+    # የድሮ ምልክቶችን ከፕሮሎግ ማጽዳት
     list(prolog.query("retractall(symptom(_))"))
-
+    
     symptoms_list = []
-
-    # 💡 DEBUGGING: ፎርሙ የላከውን መረጃ በሙሉ Render Log ላይ ያትማል
-    print("--- INCOMING FORM DATA ---")
-    print(request.form)
-    print("--------------------------")
-
-    # Load all questions to map answers
+    
+    # ሁሉንም ጥያቄዎች ከዳታቤዝ ማውጣት
     cur.execute("SELECT * FROM questions")
     questions = cur.fetchall()
-
+    
     for q in questions:
-        # HTML ፎርሙ ላይ name="q1", name="q2"... ስለሆነ እዚህም በተመሳሳይ ይፈልጋል
+        # ከፎርሙ የመጣውን መልስ በደህንነት መውሰድ
         answer = request.form.get(f"q{q['id']}")
-
-        # 💡 የጃቫስክሪፕት ስህተትን ለመከላከል፡ የፊደል መጠንን ማስተካከል (yes/YES/Yes)
+        
+        # 💡 ወሳኙ ማስተካከያ፡ መልሱ ካልባዶ እና ትንንሽ/ትላልቅ ፊደላትን (yes/Yes/YES) ለማስተናገድ
         if answer and answer.strip().lower() == "yes":
             symptom = q["symptom_key"]
             symptoms_list.append(symptom)
             prolog.assertz(f"symptom('{symptom}')")
-
-    # 💡 ሎግ ላይ ምልክት የተደረገባቸውን ምልክቶች ማሳያ
-    print(f"🎯 Detected Symptoms for Prolog: {symptoms_list}")
-
+            
+    # በፕሮሎግ ውስጥ ያሉትን በሽታዎች መፈተሽ
     disease_list = ["malaria", "flu", "covid19", "common_cold"]
     results = []
-
+    
     for d in disease_list:
         try:
             q = list(prolog.query(f"disease_score({d}, Score)"))
             if q:
                 score = int(q[0]["Score"])
                 results.append({"disease": d, "score": score})
-        except Exception as e:
-            print(f"Prolog query error for {d}: {e}")
+        except:
             continue
-
+            
     disease = "Unknown"
     if results:
         results.sort(key=lambda x: x["score"], reverse=True)
-        # ከፍተኛ ውጤት ያገኘውን በሽታ መምረጥ (ውጤቱ ከ 0 በላይ ከሆነ)
+        # ውጤቱ ከ 0 በላይ መሆኑን ማረጋገጥ
         if results[0]["score"] > 0:
             disease = results[0]["disease"].lower().strip()
-
-    print(f"🏥 Diagnosed Disease: {disease}")
-
-    # Query the treatments table using lowercase matching
+            
+    # 💡 በሊኑክስ ላይ የኬዝ ስሜትን ለመከላከል LOWER(disease) መጠቀም
     cur.execute("SELECT drug_name, advice FROM treatments WHERE LOWER(disease)=?", (disease,))
     t = cur.fetchone()
-
+    
     display_disease = disease.capitalize() if disease != "Unknown" else "Unknown"
     drug = t["drug_name"] if t else "Not found"
     advice = t["advice"] if t else "No advice"
-
-    # Save to user_answers table for full tracking (Optional but good)
-    for q in questions:
-        ans_val = request.form.get(f"q{q['id']}", "no")
-        cur.execute("""
-            INSERT INTO user_answers (user_id, question_id, answer)
-            VALUES (?, ?, ?)
-        """, (user_id, q["id"], ans_val))
-
-    # Save to diagnosis_history
+    
+    # ወደ ታሪክ ሰንጠረዥ ማስቀመጥ
     cur.execute("""
         INSERT INTO diagnosis_history (user_id, disease, confidence, drug_name, advice)
         VALUES (?, ?, ?, ?, ?)
     """, (user_id, display_disease, 100, drug, advice))
-
+    
     conn.commit()
     conn.close()
-
+    
     return render_template("result.html",
         disease=display_disease,
         drug=drug,
         advice=advice,
         symptoms=symptoms_list
     )
-
-# =========================
 # HISTORY
 # =========================
 @app.route("/history")
