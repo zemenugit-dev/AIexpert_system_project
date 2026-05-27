@@ -1,6 +1,7 @@
 
 from flask import Flask, render_template, request, redirect, session, url_for, make_response
-from database.database import init_db, seed_questions, seed_treatments, get_connection
+# 🚨 የድሮውን መስመር አጥፍተህ በዚህ ተካው (የሌሉትን seed_questions እና seed_treatments አስወግደናል)
+from database.database import init_db, get_connection
 from werkzeug.security import generate_password_hash, check_password_hash
 from pyswip import Prolog
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
@@ -22,8 +23,7 @@ app.secret_key = "medical_ai_secret"
 # DB INIT
 # =========================
 init_db()
-seed_questions()
-seed_treatments()
+
 
 # =========================
 # PROLOG
