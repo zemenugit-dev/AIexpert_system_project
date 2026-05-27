@@ -254,10 +254,15 @@ def submit_answers():
 
     if results:
         results.sort(key=lambda x: x["score"], reverse=True)
-        disease = results[0]["disease"]
+        # Ensure the string is normalized to lowercase to match the seeded treatments table
+        disease = results[0]["disease"].lower().strip()
 
-    cur.execute("SELECT drug_name, advice FROM treatments WHERE disease=?", (disease,))
+    # 💡 FIX: Query using the strictly lowercase disease name
+    cur.execute("SELECT drug_name, advice FROM treatments WHERE LOWER(disease)=?", (disease,))
     t = cur.fetchone()
+
+    # Capitalize the disease name for a beautiful UI display (e.g., 'malaria' -> 'Malaria')
+    display_disease = disease.capitalize() if disease != "Unknown" else "Unknown"
 
     drug = t["drug_name"] if t else "Not found"
     advice = t["advice"] if t else "No advice"
@@ -266,13 +271,13 @@ def submit_answers():
         INSERT INTO diagnosis_history
         (user_id, disease, confidence, drug_name, advice)
         VALUES (?, ?, ?, ?, ?)
-    """, (user_id, disease, 100, drug, advice))
+    """, (user_id, display_disease, 100, drug, advice))
 
     conn.commit()
     conn.close()
 
     return render_template("result.html",
-        disease=disease,
+        disease=display_disease,
         drug=drug,
         advice=advice,
         symptoms=symptoms_list
