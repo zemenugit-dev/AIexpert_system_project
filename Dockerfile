@@ -20,4 +20,5 @@ COPY . .
 EXPOSE 10000
 
 # Start the application using python app.py
-CMD ["python", "app.py"]
+# Change this line at the bottom of your Dockerfile:
+CMD ["gunicorn", "--bind", "0.0.0.0:10000", "app:app"]
