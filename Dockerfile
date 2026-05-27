@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose the port your Flask app runs on (Render assigns this via $PORT)
-RUN python seed.py
+
 EXPOSE 10000
 
 # Start the application using python app.py
