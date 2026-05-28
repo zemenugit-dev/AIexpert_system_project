@@ -26,22 +26,28 @@ init_db()
 
 
 # =========================
-# PROLOG
+# =========================
+# PROLOG (ROBUST ERROR HANDLING)
 # =========================
 prolog = Prolog()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-rules_path = os.path.join(BASE_DIR, "prolog_engine", "rules.pl")
-prolog.consult(rules_path)
 
-# =========================
-# HELPERS
-# =========================
-def is_admin():
-    return session.get("role") == "admin"
-
-def is_logged_in():
-    return "user_id" in session
+# 💡 ማስተካከያ፡ በሊኑክስ ላይ ስህተት እንዳይፈጥር በ try-except መክበብ
+try:
+    # 1. መጀመሪያ በትንሽ ፊደል መሞከር
+    rules_path = os.path.join(BASE_DIR, "prolog_engine", "rules.pl")
+    if not os.path.exists(rules_path):
+        # 2. ካልተገኘ በትልልቅ ፊደላት መሞከር (ባክአፕ)
+        rules_path = os.path.join(BASE_DIR, "Prolog_Engine", "rules.pl")
+        
+    if os.path.exists(rules_path):
+        prolog.consult(rules_path)
+        print(f"✅ Prolog rules loaded successfully from: {rules_path}")
+    else:
+        print("⚠️ Warning: rules.pl not found anywhere! Check folder name casing.")
+except Exception as e:
+    print(f"❌ Prolog system warning: {e}")
 
 # =========================
 # HOME
