@@ -63,7 +63,7 @@ def register():
     return render_template("register.html")
 
 # =========================
-# LOGIN
+# LOGIN (FIXED HASH & CASE)
 # =========================
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -74,12 +74,14 @@ def login():
         conn = get_connection()
         cur = conn.cursor()
 
+        # 💡 የኬዝ ስሜትን ለመከላከል LOWER() ተጠቅመናል
         cur.execute("SELECT * FROM users WHERE LOWER(email)=?", (email,))
         user = cur.fetchone()
         conn.close()
 
+        # 💡 ደህንነቱ በተጠበቀ ሁኔታ ሀሹን እና ፓስወርዱን ማመሳከር
         if user and check_password_hash(user["password"], password):
-            session["user_id"] = user["id"]
+            session["user_id"] = int(user["id"])
             session["name"] = user["name"]
             session["role"] = user["role"]
 
@@ -120,14 +122,14 @@ def questions():
     return render_template("questions.html", questions=questions)
 
 # =========================
-# DIAGNOSIS ENGINE (SWI-PROLOG EMULATOR IN PYTHON)
+# DIAGNOSIS ENGINE
 # =========================
 @app.route("/submit_answers", methods=["POST"])
 def submit_answers():
     if not is_logged_in():
         return redirect("/login")
     
-    user_id = session["user_id"]
+    user_id = int(session["user_id"])
     conn = get_connection()
     cur = conn.cursor()
     
@@ -135,32 +137,22 @@ def submit_answers():
     cur.execute("SELECT * FROM questions")
     questions = cur.fetchall()
     
-    # ፎርሙን በንጽሕና ማንበብ
     for q in questions:
         answer = request.form.get(f"q{q['id']}")
         if answer and answer.strip().lower() == "yes":
             symptoms_list.append(q["symptom_key"])
             
-    # 🎯 የፕሮሎግ ህጎችን (Rules) በፓይቶን መተካት - ለRender 100% ደህንነቱ የተጠበቀ ነው!
     scores = {"malaria": 0, "flu": 0, "covid19": 0, "common_cold": 0}
     
-    # Malaria ህግ፡ fever, chills, headache, muscle_pain
     for sym in ["fever", "chills", "headache", "muscle_pain"]:
         if sym in symptoms_list: scores["malaria"] += 1
-        
-    # Flu ህግ፡ fever, headache, cough, sore_throat, runny_nose
     for sym in ["fever", "headache", "cough", "sore_throat", "runny_nose"]:
         if sym in symptoms_list: scores["flu"] += 1
-        
-    # Covid19 ህግ፡ fever, cough, loss_of_taste, sore_throat
     for sym in ["fever", "cough", "loss_of_taste", "sore_throat"]:
         if sym in symptoms_list: scores["covid19"] += 1
-        
-    # Common Cold ህግ፡ cough, sore_throat, runny_nose
     for sym in ["cough", "sore_throat", "runny_nose"]:
         if sym in symptoms_list: scores["common_cold"] += 1
         
-    # ከፍተኛ ነጥብ ያገኘውን በሽታ መምረጥ
     detected_disease = "unknown"
     highest_score = 0
     
@@ -169,7 +161,6 @@ def submit_answers():
             highest_score = score
             detected_disease = disease
 
-    # ከዳታቤዝ ውስጥ ሕክምናውን መፈለግ
     cur.execute("SELECT drug_name, advice FROM treatments WHERE LOWER(disease)=?", (detected_disease,))
     t = cur.fetchone()
     
@@ -177,7 +168,6 @@ def submit_answers():
     drug = t["drug_name"] if t else "Not found"
     advice = t["advice"] if t else "No advice"
     
-    # ወደ ታሪክ ማስቀመጥ
     cur.execute("""
         INSERT INTO diagnosis_history (user_id, disease, confidence, drug_name, advice)
         VALUES (?, ?, ?, ?, ?)
@@ -194,20 +184,23 @@ def submit_answers():
     )
 
 # =========================
-# HISTORY
+# HISTORY (🎯 FIXED: SHOWS EXACT USER HISTORY ONLY)
 # =========================
 @app.route("/history")
 def history():
     if not is_logged_in():
         return redirect("/login")
 
+    current_user_id = int(session["user_id"])
     conn = get_connection()
     cur = conn.cursor()
+    
+    # 💡 እዚህ ጋር የገባውን ሰው (current_user_id) ታሪክ ብቻ እንዲያወጣ ገድበነዋል!
     cur.execute("""
         SELECT * FROM diagnosis_history
-        WHERE user_id=?
+        WHERE CAST(user_id AS INTEGER) = ?
         ORDER BY created_at DESC
-    """, (session["user_id"],))
+    """, (current_user_id,))
     history = cur.fetchall()
     conn.close()
 
