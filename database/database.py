@@ -103,3 +103,10 @@ def init_db():
     conn.commit()
     conn.close()
     print("✅ All tables created and default data seeded successfully on Render!")
+
+def get_connection():
+    import sqlite3, os
+    DB_PATH = os.path.join(os.path.dirname(__file__), 'app.db')
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
